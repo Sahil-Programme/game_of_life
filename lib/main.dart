@@ -20,34 +20,68 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: LayoutBuilder(
-        builder: (ctx, constraint) {
-          late List<Container> list = [];
-          for (double x = 0;
-              x < constraint.maxWidth;
-              x = x + constraint.maxWidth / 50) {
-            list.add(
-              Container(
-                width: constraint.maxWidth / 50,
-                height: constraint.maxHeight,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 0.5,
-                  ),
-                ),
-              ),
-            );
-          }
-          return Row(
-            children: list,
+      body: LayoutBuilder(builder: (ctx, constraint) {
+        late final List<Widget> list = [];
+        late final List<Widget> col = [];
+        for (double i = 0;
+            i < constraint.maxWidth - constraint.maxWidth / 30;
+            i = i + constraint.maxWidth / 30) {
+          list.add(
+            Cell(
+                width: constraint.maxWidth / 30,
+                height: constraint.maxWidth / 30),
           );
-        },
+        }
+        for (double i = 0;
+            i < constraint.maxHeight - constraint.maxHeight / 30;
+            i = i + constraint.maxWidth / 30) {
+          col.add(Row(
+            children: list,
+          ));
+        }
+        return Center(
+          child: Column(
+            children: col,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class Cell extends StatefulWidget {
+  const Cell({
+    Key? key,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+  final double width;
+  final double height;
+
+  @override
+  State<Cell> createState() => _CellState();
+}
+
+class _CellState extends State<Cell> {
+  bool isPressed = false;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isPressed = isPressed ? false : true;
+        });
+      },
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+            color: isPressed ? Colors.red : Colors.white,
+            border: Border.all(width: 0.25, color: Colors.black)),
       ),
     );
   }
